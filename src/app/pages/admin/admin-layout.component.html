@@ -1,0 +1,25 @@
+<div class="admin-wrap">
+  <aside class="sidebar">
+    <h2 class="sidebar-title">Panel Admin</h2>
+    <nav class="sidebar-nav">
+      <a routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Inicio</a>
+      <a routerLink="/admin/fotos" routerLinkActive="active">Fotos</a>
+      <a routerLink="/admin/portada-logo" routerLinkActive="active">Portada y logo</a>
+      <a routerLink="/admin/secciones-galeria" routerLinkActive="active">Secciones galería</a>
+      <a routerLink="/admin/videos" routerLinkActive="active">Videos</a>
+      <a routerLink="/admin/categorias" routerLinkActive="active">Categorías</a>
+      <a routerLink="/admin/productos" routerLinkActive="active">Productos</a>
+      <a routerLink="/admin/configuracion-tienda" routerLinkActive="active">Config. tienda</a>
+      <a routerLink="/admin/metodos-pago" routerLinkActive="active">Métodos de pago</a>
+      <a routerLink="/admin/ventas" routerLinkActive="active">Ventas</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span class="user">{{ auth.user()?.username }}</span>
+      <button type="button" class="btn-logout" (click)="logout()">Cerrar sesión</button>
+      <a routerLink="/" class="link-home">Ver web</a>
+    </div>
+  </aside>
+  <main class="content">
+    <router-outlet />
+  </main>
+</div>

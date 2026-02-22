@@ -1,0 +1,80 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Gestión de Videos</h1>
+    @if (!formMode) {
+      <button type="button" class="btn btn-primary" (click)="add()">Agregar video</button>
+    }
+  </div>
+
+  @if (formMode) {
+    <div class="form-card">
+      <h2>{{ formMode === 'create' ? 'Nuevo video' : 'Editar video' }}</h2>
+      <form (ngSubmit)="submit()">
+        <label>
+          Título *
+          <input type="text" [(ngModel)]="form.titulo" name="titulo" required />
+        </label>
+        <p class="form-hint">Elige una opción: URL del video o subir archivo (al menos uno obligatorio).</p>
+        <label>
+          URL del video (YouTube, Facebook, enlace directo)
+          <input type="url" [(ngModel)]="form.urlVideo" name="urlVideo" placeholder="https://www.youtube.com/watch?v=..." />
+        </label>
+        <label>
+          O subir archivo desde galería / dispositivo
+          <input type="file" accept="video/*" (change)="onFileChange($event)" />
+        </label>
+        @if (videoFile) {
+          <p class="file-selected">Archivo seleccionado: {{ videoFile.name }}</p>
+        }
+        <label>
+          Descripción
+          <textarea [(ngModel)]="form.descripcion" name="descripcion" rows="3"></textarea>
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" [(ngModel)]="form.activo" name="activo" />
+          Activo (visible en la web)
+        </label>
+        @if (error) {
+          <p class="error">{{ error }}</p>
+        }
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            {{ loading ? 'Guardando…' : 'Guardar' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (videos$ | async; as videos) {
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>URL</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (v of videos; track v.id) {
+          <tr>
+            <td>{{ v.titulo }}</td>
+            <td><a [href]="v.urlVideo" target="_blank" rel="noopener">{{ v.urlVideo }}</a></td>
+            <td>{{ v.activo ? 'Sí' : 'No' }}</td>
+            <td>
+              <button type="button" class="btn btn-sm" (click)="edit(v)">Editar</button>
+              <button type="button" class="btn btn-sm btn-danger" (click)="delete(v)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    @if (videos.length === 0 && !formMode) {
+      <p class="empty">No hay videos. Agrega uno desde el botón superior.</p>
+    }
+  </div>
+  }
+</div>

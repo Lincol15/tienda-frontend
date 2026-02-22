@@ -1,0 +1,292 @@
+<header class="header">
+  <div class="header-inner">
+    <a routerLink="/" class="logo">Caporales Cristos</a>
+    <button type="button" class="hamburger" (click)="menuOpen = !menuOpen" [attr.aria-expanded]="menuOpen" aria-label="Menú">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+    <nav class="nav" [class.open]="menuOpen">
+      <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="menuOpen = false">Inicio</a>
+      <a routerLink="/corigen" class="btn-corigen" (click)="menuOpen = false">Ir a C'Origen</a>
+    </nav>
+  </div>
+</header>
+
+<main class="main" role="main">
+  <!-- Todo lo de abajo es contenido de la página, no del header -->
+  <!-- Portada: banner grande (desde admin o /banner.png) -->
+  <section class="hero-portada" aria-label="Portada">
+    <img
+      [src]="portadaUrl()"
+      alt="Asociación Folklórica Caporales Cristos - Festividad Virgen de las Mercedes - Alferados 2025"
+      class="hero-portada-img"
+      fetchpriority="high"
+    />
+  </section>
+
+  <div class="main-content-wrap">
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="hero-label">Asociación folklórica</p>
+        <h1><span class="hero-title-line">Caporales</span><span class="hero-title-line hero-title-accent">Cristos</span></h1>
+        <p class="hero-tagline">Fe, tradición y cultura en cada paso.</p>
+        <p class="hero-sub">La danza que une identidad y raíces. Bienvenidos a nuestra casa.</p>
+        <div class="hero-cta-wrap">
+          <a href="#historia" class="hero-cta-btn">Nuestra historia</a>
+        </div>
+      </div>
+      <div class="hero-logo-wrap">
+        <img [src]="heroLogoUrl" alt="Caporales Cristos" class="hero-logo" (error)="onHeroLogoError()" />
+      </div>
+    </div>
+  </section>
+
+  <section class="section historia" id="historia">
+    <span class="section-label">Quiénes somos</span>
+    <h2>Nuestra historia</h2>
+    <div class="historia-card">
+      <p>Cristos Caporales representa la unión entre fe, tradición y cultura. A través de la danza, expresamos identidad, respeto y compromiso con nuestras raíces, manteniendo viva la esencia del caporal en cada presentación.</p>
+    </div>
+  </section>
+
+  <section class="section galeria-wrap" id="galeria">
+    <span class="section-label">Galería</span>
+    @if (galeriaConSecciones$ | async; as data) {
+      <!-- Si no hay secciones desde el backend: un solo bloque con todas las fotos -->
+      @if (data.secciones.length === 0) {
+        <h2>Galería</h2>
+        <div class="gallery">
+          @if (data.fotosSinSeccion.length === 0) {
+            <p class="empty">Aún no hay fotos publicadas.</p>
+          } @else {
+            @for (foto of data.fotosSinSeccion; track foto.id) {
+              <article class="gallery-item" (click)="openLightbox(foto)" role="button" tabindex="0" (keydown.enter)="openLightbox(foto)" (keydown.space)="openLightbox(foto); $event.preventDefault()">
+                <div class="gallery-img-wrap">
+                  <img [src]="imageUrl(foto.urlImagen)" [alt]="foto.titulo" loading="lazy" />
+                </div>
+                <div class="gallery-caption">
+                  <h3>{{ foto.titulo }}</h3>
+                  @if (foto.descripcion) {
+                    <p>{{ foto.descripcion }}</p>
+                  }
+                </div>
+              </article>
+            }
+          }
+        </div>
+      } @else {
+        <!-- Primero: fotos sin sección (ej. Cultural / Tradicional) arriba -->
+        @if (data.fotosSinSeccion.length > 0) {
+          <div class="galeria-seccion">
+            <h2>Cultural / Tradicional</h2>
+            <div class="gallery">
+              @for (foto of data.fotosSinSeccion; track foto.id) {
+                <article class="gallery-item" (click)="openLightbox(foto)" role="button" tabindex="0" (keydown.enter)="openLightbox(foto)" (keydown.space)="openLightbox(foto); $event.preventDefault()">
+                  <div class="gallery-img-wrap">
+                    <img [src]="imageUrl(foto.urlImagen)" [alt]="foto.titulo" loading="lazy" />
+                  </div>
+                  <div class="gallery-caption">
+                    <h3>{{ foto.titulo }}</h3>
+                    @if (foto.descripcion) {
+                      <p>{{ foto.descripcion }}</p>
+                    }
+                  </div>
+                </article>
+              }
+            </div>
+          </div>
+        }
+        <!-- Luego: cada sección (ej. Trajes 2025) -->
+        @for (sec of data.secciones; track sec.id) {
+          @if (sec.activo !== false) {
+            <div class="galeria-seccion">
+              <h2>{{ sec.titulo }}</h2>
+              <div class="gallery">
+                @if ((sec.fotos?.length ?? 0) === 0) {
+                  <p class="empty">Aún no hay fotos en esta sección.</p>
+                } @else {
+                  @for (foto of sec.fotos; track foto.id) {
+                    <article class="gallery-item" (click)="openLightbox(foto)" role="button" tabindex="0" (keydown.enter)="openLightbox(foto)" (keydown.space)="openLightbox(foto); $event.preventDefault()">
+                      <div class="gallery-img-wrap">
+                        <img [src]="imageUrl(foto.urlImagen)" [alt]="foto.titulo" loading="lazy" />
+                      </div>
+                      <div class="gallery-caption">
+                        <h3>{{ foto.titulo }}</h3>
+                        @if (foto.descripcion) {
+                          <p>{{ foto.descripcion }}</p>
+                        }
+                      </div>
+                    </article>
+                  }
+                }
+              </div>
+            </div>
+          }
+        }
+      }
+    }
+  </section>
+
+  @if (lightboxFoto) {
+    <div class="lightbox-overlay" (click)="closeLightbox()" role="button" tabindex="0">
+      <div class="lightbox-content" (click)="$event.stopPropagation()">
+        <button type="button" class="lightbox-close" (click)="closeLightbox()" aria-label="Cerrar">&times;</button>
+        <img [src]="imageUrl(lightboxFoto.urlImagen)" [alt]="lightboxFoto.titulo" />
+        <div class="lightbox-caption">
+          <h3>{{ lightboxFoto.titulo }}</h3>
+          @if (lightboxFoto.descripcion) {
+            <p>{{ lightboxFoto.descripcion }}</p>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  @if (lightboxVideo) {
+    <div class="lightbox-overlay" (click)="closeVideoLightbox()" role="button" tabindex="0">
+      <div class="lightbox-content lightbox-video" (click)="$event.stopPropagation()">
+        <button type="button" class="lightbox-close" (click)="closeVideoLightbox()" aria-label="Cerrar">&times;</button>
+        <div class="lightbox-video-wrap">
+          @if (lightboxVideo.tipoVideo === 'FACEBOOK' && lightboxVideo.urlVideo) {
+            <iframe
+              [src]="facebookEmbedUrl(lightboxVideo.urlVideo)"
+              [title]="lightboxVideo.titulo"
+              frameborder="0"
+              allowfullscreen
+              allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+              class="lightbox-iframe"
+            ></iframe>
+          } @else if (lightboxVideo.tipoVideo === 'YOUTUBE' && lightboxVideo.embedUrl) {
+            <iframe
+              [src]="safeEmbedUrl(lightboxVideo.embedUrl)"
+              [title]="lightboxVideo.titulo"
+              frameborder="0"
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowfullscreen
+              class="lightbox-iframe"
+            ></iframe>
+          } @else if (lightboxVideo.tipoVideo === 'DIRECTO' && isDirectoArchivo(lightboxVideo.embedUrl || lightboxVideo.urlVideo)) {
+            <video controls autoplay [title]="lightboxVideo.titulo" [src]="safeVideoUrl(lightboxVideo.embedUrl || lightboxVideo.urlVideo)" class="lightbox-video-el">
+              Tu navegador no soporta la reproducción de video.
+            </video>
+          } @else {
+            <p class="lightbox-fallback">Video no disponible para ampliar.</p>
+          }
+        </div>
+        <div class="lightbox-caption">
+          <h3>{{ lightboxVideo.titulo }}</h3>
+          @if (lightboxVideo.descripcion) {
+            <p>{{ lightboxVideo.descripcion }}</p>
+          }
+          @if (lightboxVideo.urlVideo) {
+            <a [href]="fullVideoUrl(lightboxVideo.urlVideo)" target="_blank" rel="noopener noreferrer" class="video-link-externo">Ver enlace original</a>
+          }
+        </div>
+      </div>
+    </div>
+  }
+
+  <section class="section" id="videos">
+    <span class="section-label">Multimedia</span>
+    <h2>Videos</h2>
+    @if (videos$ | async; as videos) {
+    <div class="videos">
+      @if (videos.length === 0) {
+        <p class="empty">Aún no hay videos publicados.</p>
+      } @else {
+        @for (video of videos; track video.id) {
+          <article class="video-item">
+            <div class="video-wrapper">
+              <button type="button" class="video-ampliar" (click)="openVideoLightbox(video)" title="Ampliar video" aria-label="Ampliar video">
+                ⛶
+              </button>
+              @if (video.tipoVideo === 'FACEBOOK' && video.urlVideo) {
+                <iframe
+                  [src]="facebookEmbedUrl(video.urlVideo)"
+                  [title]="video.titulo"
+                  frameborder="0"
+                  allowfullscreen
+                  allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                ></iframe>
+              } @else if (video.tipoVideo === 'FACEBOOK' || !video.embedUrl) {
+                <div class="video-placeholder">
+                  <p>Video en {{ video.tipoVideo === 'FACEBOOK' ? 'Facebook' : 'enlace externo' }}</p>
+                  <a [href]="fullVideoUrl(video.urlVideo)" target="_blank" rel="noopener noreferrer" class="btn-ver-video">
+                    {{ video.tipoVideo === 'FACEBOOK' ? 'Ver video en Facebook' : 'Ver video' }}
+                  </a>
+                </div>
+              } @else if (video.tipoVideo === 'YOUTUBE' && video.embedUrl) {
+                <iframe
+                  [src]="safeEmbedUrl(video.embedUrl)"
+                  [title]="video.titulo"
+                  frameborder="0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowfullscreen
+                ></iframe>
+              } @else if (video.tipoVideo === 'DIRECTO' && (video.embedUrl || video.urlVideo)) {
+                @if (isDirectoArchivo(video.embedUrl || video.urlVideo)) {
+                  <video controls preload="metadata" [title]="video.titulo" [src]="safeVideoUrl(video.embedUrl || video.urlVideo)">
+                    Tu navegador no soporta la reproducción de video.
+                  </video>
+                } @else {
+                  <div class="video-placeholder">
+                    <p>Video en enlace externo</p>
+                    <a [href]="fullVideoUrl(video.urlVideo)" target="_blank" rel="noopener noreferrer" class="btn-ver-video">Ver video</a>
+                  </div>
+                }
+              } @else {
+                <div class="video-placeholder">
+                  <p>Video no embebible</p>
+                  <a [href]="fullVideoUrl(video.urlVideo)" target="_blank" rel="noopener noreferrer" class="btn-ver-video">Ver video</a>
+                </div>
+              }
+            </div>
+            <div class="video-caption">
+              <h3>{{ video.titulo }}</h3>
+              @if (video.descripcion) {
+                <p>{{ video.descripcion }}</p>
+              }
+              @if (video.urlVideo) {
+                <a [href]="fullVideoUrl(video.urlVideo)" target="_blank" rel="noopener noreferrer" class="video-link-externo">
+                  @if (video.tipoVideo === 'YOUTUBE') {
+                    Ver en YouTube
+                  } @else if (video.tipoVideo === 'FACEBOOK') {
+                    Ver en Facebook
+                  } @else {
+                    Abrir enlace del video
+                  }
+                </a>
+              }
+            </div>
+          </article>
+        }
+      }
+    </div>
+    }
+  </section>
+
+  <section class="section cta">
+    <span class="section-label">C'Origen</span>
+    <h2>¿Quieres llevar algo a casa?</h2>
+    <p>Visita nuestra tienda C'Origen y compra por WhatsApp.</p>
+    <a routerLink="/corigen" class="btn-cta">Ir a C'Origen</a>
+  </section>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <strong>Caporales Cristos</strong>
+      <span>Danzas, tradición y cultura</span>
+    </div>
+    <div class="footer-links">
+      <a routerLink="/">Inicio</a>
+      <a routerLink="/corigen">C'Origen Tienda</a>
+      <a href="https://www.facebook.com/profile.php?id=100063481549524" target="_blank" rel="noopener noreferrer">Facebook</a>
+    </div>
+    <p class="footer-copy">© Caporales Cristos / C'Origen</p>
+  </div>
+</footer>

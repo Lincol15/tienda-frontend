@@ -1,0 +1,94 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Ventas / Pedidos</h1>
+  </div>
+
+  @if (ventas$ | async; as ventas) {
+    <div class="table-wrap">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Fecha</th>
+            <th>Cliente</th>
+            <th>Teléfono</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (v of ventas; track v.id) {
+            <tr>
+              <td>{{ formatoFecha(v.fechaCreacion) }}</td>
+              <td>{{ v.clienteNombre }}</td>
+              <td>{{ v.clienteTelefono }}</td>
+              <td>S/ {{ v.total | number:'1.2-2' }}</td>
+              <td>
+                <span class="estado-badge" [class]="'estado-' + v.estado?.toLowerCase()">{{ v.estado }}</span>
+              </td>
+              <td>
+                <button type="button" class="btn btn-sm" (click)="verDetalle(v)">
+                  {{ ventaSeleccionada?.id === v.id ? 'Ocultar' : 'Ver detalle' }}
+                </button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+      @if (ventas.length === 0) {
+        <p class="empty">No hay ventas registradas.</p>
+      }
+    </div>
+
+    @if (ventaSeleccionada) {
+      <div class="form-card venta-detalle">
+        <h2>Detalle de venta #{{ ventaSeleccionada.id }}</h2>
+        <p><strong>Fecha:</strong> {{ formatoFecha(ventaSeleccionada.fechaCreacion) }}</p>
+        <p><strong>Cliente:</strong> {{ ventaSeleccionada.clienteNombre }}</p>
+        <p><strong>Teléfono:</strong> {{ ventaSeleccionada.clienteTelefono }}</p>
+        @if (ventaSeleccionada.metodoPago) {
+          <p><strong>Método de pago:</strong> {{ ventaSeleccionada.metodoPago }}</p>
+        }
+        @if (ventaSeleccionada.notas) {
+          <p><strong>Notas:</strong> {{ ventaSeleccionada.notas }}</p>
+        }
+        <p><strong>Estado:</strong>
+          <select
+            [value]="ventaSeleccionada.estado"
+            (change)="cambiarEstado(ventaSeleccionada!.id, $any($event.target).value)"
+            [disabled]="loadingEstado"
+          >
+            @for (e of estados; track e) {
+              <option [value]="e">{{ e }}</option>
+            }
+          </select>
+        </p>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Producto</th>
+              <th>Cantidad</th>
+              <th>P. unit.</th>
+              <th>Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (item of ventaSeleccionada.items; track item.productoId + item.cantidad) {
+              <tr>
+                <td>{{ item.productoNombre ?? 'Producto ' + item.productoId }}</td>
+                <td>{{ item.cantidad }}</td>
+                <td>S/ {{ item.precioUnitario | number:'1.2-2' }}</td>
+                <td>S/ {{ subtotalItem(item) | number:'1.2-2' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+        <p class="venta-total"><strong>Total: S/ {{ ventaSeleccionada.total | number:'1.2-2' }}</strong></p>
+        @if (error) {
+          <p class="error">{{ error }}</p>
+        }
+        <button type="button" class="btn btn-secondary" (click)="cerrarDetalle()">Cerrar</button>
+      </div>
+    }
+  }
+</div>

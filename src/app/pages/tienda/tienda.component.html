@@ -1,0 +1,185 @@
+<div class="tienda-page">
+  <header class="header">
+    <div class="header-inner">
+      <a routerLink="/" class="logo">
+        @if (showHeaderLogo) {
+          <img src="/logo-corigen.png" alt="C'Origen" class="logo-img" (error)="hideHeaderLogo()" />
+        }
+        <span class="logo-text">C'Origen</span>
+      </a>
+      <div class="header-actions">
+        <button
+          type="button"
+          class="btn-cart"
+          (click)="cartOpen = true"
+          [attr.aria-label]="'Carrito: ' + totalItems() + ' ítems'"
+        >
+          Carrito
+          @if (totalItems() > 0) {
+            <span class="cart-badge">{{ totalItems() }}</span>
+          }
+        </button>
+        <button type="button" class="hamburger" (click)="menuOpen = !menuOpen" [attr.aria-expanded]="menuOpen" aria-label="Menú">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+      </div>
+      <nav class="nav" [class.open]="menuOpen">
+        <a routerLink="/" (click)="menuOpen = false">Caporales Cristos</a>
+        <a routerLink="/corigen" routerLinkActive="active" (click)="menuOpen = false">Tienda</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Drawer carrito -->
+  <div class="cart-overlay" [class.open]="cartOpen" (click)="cartOpen = false" role="button" tabindex="0" aria-label="Cerrar carrito"></div>
+  <aside class="cart-drawer" [class.open]="cartOpen">
+    <div class="cart-drawer-header">
+      <h2>Carrito</h2>
+      <button type="button" class="cart-close" (click)="cartOpen = false" aria-label="Cerrar">×</button>
+    </div>
+    <div class="cart-drawer-body">
+      @if (cartItems().length === 0) {
+        <p class="cart-empty">Tu carrito está vacío.</p>
+      } @else {
+        <ul class="cart-list">
+          @for (item of cartItems(); track item.productoId) {
+            <li class="cart-item">
+              @if (item.urlImagen) {
+                <img [src]="imageUrl(item.urlImagen)" [alt]="item.nombre" class="cart-item-img" />
+              } @else {
+                <div class="cart-item-placeholder">Sin imagen</div>
+              }
+              <div class="cart-item-info">
+                <span class="cart-item-name">{{ item.nombre }}</span>
+                <span class="cart-item-price">S/ {{ item.precio | number:'1.2-2' }} × {{ item.cantidad }}</span>
+                <div class="cart-item-qty">
+                  <button type="button" (click)="setCartQty(item.productoId, item.cantidad - 1)">−</button>
+                  <span>{{ item.cantidad }}</span>
+                  <button type="button" (click)="setCartQty(item.productoId, item.cantidad + 1)">+</button>
+                </div>
+              </div>
+              <button type="button" class="cart-item-remove" (click)="removeFromCart(item.productoId)" aria-label="Quitar">×</button>
+            </li>
+          }
+        </ul>
+        <div class="cart-total">
+          Total: <strong>S/ {{ totalAmount() | number:'1.2-2' }}</strong>
+        </div>
+        @if (whatsappLink(); as link) {
+          <a [href]="link" target="_blank" rel="noopener noreferrer" class="btn-comprar btn-comprar-cart">
+            Comprar por WhatsApp
+          </a>
+        } @else if (cartItems().length > 0) {
+          <p class="cart-no-whatsapp">Configura el número de WhatsApp en el panel admin para habilitar la compra.</p>
+        }
+        <button type="button" class="btn-vaciarcarrito" (click)="clearCart()">Vaciar carrito</button>
+      }
+    </div>
+  </aside>
+
+  <main class="main">
+    <section class="hero">
+      <div class="hero-logo-wrap">
+        <img src="/LOGOTIENDA.png" alt="C'Origen" class="hero-logo" />
+      </div>
+      <div class="hero-text">
+        <p class="hero-tagline">Productos con tradición y calidad</p>
+        <span class="hero-line"></span>
+        <p class="hero-sub">Compra por WhatsApp de forma sencilla</p>
+        <p class="hero-frase">Ropa típica, trajes de caporales y prendas con identidad. Hecho con dedicación para ti.</p>
+      </div>
+    </section>
+
+    @if (categorias$ | async; as categorias) {
+    <section class="filtros">
+      @if (categorias.length > 0) {
+        <div class="filtros-inner">
+          <button
+            type="button"
+            class="filtro-btn"
+            [class.active]="categoriaFiltro === null"
+            (click)="setFiltro(null)"
+          >
+            Todos
+          </button>
+          @for (cat of categorias; track cat.id) {
+            <button
+              type="button"
+              class="filtro-btn"
+              [class.active]="categoriaFiltro === cat.id"
+              (click)="setFiltro(cat.id)"
+            >
+              {{ cat.nombre }}
+            </button>
+          }
+        </div>
+      }
+    </section>
+    }
+
+    <section class="productos">
+      @if (productos$ | async; as productos) {
+      <div class="productos-grid">
+        @if (productos.length === 0) {
+          <p class="empty">No hay productos en esta categoría.</p>
+        } @else {
+          @for (p of productos; track p.id) {
+            <article class="producto-card">
+              <div class="producto-img">
+                @if (p.urlImagen) {
+                  <img [src]="imageUrl(p.urlImagen)" [alt]="p.nombre" loading="lazy" />
+                } @else {
+                  <div class="producto-placeholder">Sin imagen</div>
+                }
+              </div>
+              <div class="producto-body">
+                <h3>{{ p.nombre }}</h3>
+                @if (p.descripcion) {
+                  <p class="desc">{{ p.descripcion }}</p>
+                }
+                <p class="precio">S/ {{ p.precio | number:'1.2-2' }}</p>
+                <p class="stock" [class.sin-stock]="stock(p) === 0">
+                  @if (stock(p) === 0) {
+                    Sin stock
+                  } @else {
+                    {{ stock(p) }} disponibles
+                  }
+                </p>
+                @if (stock(p) > 0) {
+                  <div class="add-to-cart-row">
+                    <input
+                      type="number"
+                      [value]="getAddQty(p.id)"
+                      (input)="setAddQty(p.id, +$any($event.target).value)"
+                      min="1"
+                      [max]="stock(p)"
+                      class="input-qty"
+                    />
+                    <button type="button" class="btn-add-cart" (click)="addToCart(p)">
+                      Añadir al carrito
+                    </button>
+                  </div>
+                } @else {
+                  <a [href]="comprarLink(p)" target="_blank" rel="noopener noreferrer" class="btn-comprar btn-comprar-disabled" aria-disabled="true">
+                    Sin stock
+                  </a>
+                }
+              </div>
+            </article>
+          }
+        }
+      </div>
+      }
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      <a routerLink="/" class="footer-link">← Volver a Caporales Cristos</a>
+      <p class="footer-copy">C'Origen · Productos con tradición</p>
+      <a routerLink="/admin/login" class="footer-admin">Admin</a>
+    </div>
+  </footer>
+</div>

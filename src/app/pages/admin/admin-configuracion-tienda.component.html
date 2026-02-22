@@ -1,0 +1,45 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Configuración tienda</h1>
+  </div>
+
+  @if (loading()) {
+    <p>Cargando…</p>
+  } @else {
+    <div class="form-card">
+      <h2>Número de WhatsApp</h2>
+      <p class="form-hint">Número al que llegarán los mensajes de compra (ej. 51987654321, sin +). Para eliminar el número, bórralo y guarda.</p>
+      <form (ngSubmit)="submit()">
+        <label>
+          Número WhatsApp
+          <div class="input-with-action">
+            <input type="text" [(ngModel)]="whatsappNumero" name="whatsappNumero" placeholder="51987654321" />
+            <button type="button" class="btn btn-secondary btn-clear" (click)="clearNumber()" title="Borrar número">
+              Borrar número
+            </button>
+          </div>
+        </label>
+
+        <label class="label-block">
+          Texto del mensaje para WhatsApp (un producto)
+          <textarea
+            [(ngModel)]="mensajePlantilla"
+            name="mensajePlantilla"
+            rows="3"
+            placeholder="Hola, quiero comprar: {{ '{' }}nombre{{ '}' }}, Precio: S/ {{ '{' }}precio{{ '}' }}"
+          ></textarea>
+          <span class="form-hint-inline">Usa {{ '{' }}nombre{{ '}' }} y {{ '{' }}precio{{ '}' }} donde quieras que se reemplacen por el nombre y precio del producto. Para el carrito se usa un mensaje con el listado completo.</span>
+        </label>
+
+        @if (error()) {
+          <p class="error">{{ error() }}</p>
+        }
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="saving()">
+            {{ saving() ? 'Guardando…' : 'Guardar' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

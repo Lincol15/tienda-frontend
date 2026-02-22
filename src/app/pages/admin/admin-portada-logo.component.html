@@ -1,0 +1,53 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Portada y logo</h1>
+  </div>
+
+  <p class="form-hint">Desde aquí tu jefe puede cambiar la imagen de portada (banner grande) y el logo de la página principal (Caporales Cristos).</p>
+
+  @if (loading()) {
+    <p>Cargando…</p>
+  } @else {
+    <div class="form-card portada-logo-form">
+      <h2>Imagen de portada</h2>
+      <p class="form-hint">Recomendado: imagen <strong>grande y ancha</strong> (por ejemplo 1920×500 px o similar) para el banner superior de la página de inicio.</p>
+      @if (config()?.portadaUrl) {
+        <div class="preview-wrap">
+          <img [src]="imageUrl(config()?.portadaUrl)" alt="Portada actual" class="preview-portada" />
+        </div>
+      }
+      <label>
+        Cambiar portada
+        <input type="file" accept="image/*" (change)="onPortadaChange($event)" />
+      </label>
+
+      <h2 class="mt">Logo</h2>
+      <p class="form-hint">Recomendado: <strong>PNG sin fondo</strong> (transparente) para que se vea bien sobre cualquier color.</p>
+      @if (config()?.logoUrl) {
+        <div class="preview-wrap logo-preview">
+          <img [src]="imageUrl(config()?.logoUrl)" alt="Logo actual" class="preview-logo" />
+        </div>
+      }
+      <label>
+        Cambiar logo
+        <input type="file" accept="image/png,image/*" (change)="onLogoChange($event)" />
+      </label>
+
+      @if (portadaFile || logoFile) {
+        <p class="files-selected">
+          @if (portadaFile) { <span>Portada: {{ portadaFile.name }}</span> }
+          @if (logoFile) { <span>Logo: {{ logoFile.name }}</span> }
+        </p>
+      }
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+      <div class="form-actions">
+        <button type="button" class="btn btn-primary" (click)="submit()" [disabled]="saving() || (!portadaFile && !logoFile)">
+          {{ saving() ? 'Guardando…' : 'Guardar portada y/o logo' }}
+        </button>
+      </div>
+    </div>
+  }
+</div>

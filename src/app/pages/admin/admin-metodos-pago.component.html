@@ -1,0 +1,88 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Métodos de pago</h1>
+    @if (!formMode) {
+      <button type="button" class="btn btn-primary" (click)="add()">Agregar método</button>
+    }
+  </div>
+
+  @if (formMode) {
+    <div class="form-card">
+      <h2>{{ formMode === 'create' ? 'Nuevo método de pago' : 'Editar método de pago' }}</h2>
+      <form (ngSubmit)="submit()">
+        <label>
+          Nombre *
+          <input type="text" [(ngModel)]="form.nombre" name="nombre" placeholder="Yape" required />
+        </label>
+        <label>
+          Tipo *
+          <select [(ngModel)]="form.tipo" name="tipo">
+            <option value="YAPE">Yape</option>
+            <option value="PLIN">Plin</option>
+            <option value="OTRO">Otro</option>
+          </select>
+        </label>
+        <label>
+          Valor (teléfono o instrucciones) *
+          <input type="text" [(ngModel)]="form.valor" name="valor" placeholder="ej. 987 654 321" required />
+        </label>
+        <label>
+          URL de imagen (opcional, ej. QR)
+          <input type="text" [(ngModel)]="form.imagenUrl" name="imagenUrl" placeholder="https://..." />
+        </label>
+        <label>
+          Orden
+          <input type="number" [(ngModel)]="form.orden" name="orden" min="0" />
+        </label>
+        <label class="checkbox">
+          <input type="checkbox" [(ngModel)]="form.activo" name="activo" />
+          Activo (visible en la tienda)
+        </label>
+        @if (error) {
+          <p class="error">{{ error }}</p>
+        }
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            {{ loading ? 'Guardando…' : 'Guardar' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (metodos$ | async; as metodos) {
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Orden</th>
+          <th>Activo</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (m of metodos; track m.id) {
+          <tr>
+            <td>{{ m.nombre }}</td>
+            <td>{{ m.tipo }}</td>
+            <td>{{ m.valor }}</td>
+            <td>{{ m.orden }}</td>
+            <td>{{ m.activo ? 'Sí' : 'No' }}</td>
+            <td>
+              <button type="button" class="btn btn-sm" (click)="edit(m)">Editar</button>
+              <button type="button" class="btn btn-sm btn-danger" (click)="delete(m)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    @if (metodos.length === 0 && !formMode) {
+      <p class="empty">No hay métodos de pago. Agrega uno (ej. Yape) desde el botón superior.</p>
+    }
+  </div>
+  }
+</div>

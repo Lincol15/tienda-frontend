@@ -1,0 +1,62 @@
+<div class="page">
+  <div class="page-header">
+    <h1>Gestión de Categorías</h1>
+    @if (!formMode) {
+      <button type="button" class="btn btn-primary" (click)="add()">Agregar categoría</button>
+    }
+  </div>
+
+  @if (formMode) {
+    <div class="form-card">
+      <h2>{{ formMode === 'create' ? 'Nueva categoría' : 'Editar categoría' }}</h2>
+      <form (ngSubmit)="submit()">
+        <label>
+          Nombre *
+          <input type="text" [(ngModel)]="form.nombre" name="nombre" required />
+        </label>
+        <label>
+          Descripción
+          <textarea [(ngModel)]="form.descripcion" name="descripcion" rows="3"></textarea>
+        </label>
+        @if (error) {
+          <p class="error">{{ error }}</p>
+        }
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary" [disabled]="loading">
+            {{ loading ? 'Guardando…' : 'Guardar' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="cancel()">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  }
+
+  @if (categorias$ | async; as categorias) {
+  <div class="table-wrap">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Descripción</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (c of categorias; track c.id) {
+          <tr>
+            <td>{{ c.nombre }}</td>
+            <td>{{ c.descripcion || '—' }}</td>
+            <td>
+              <button type="button" class="btn btn-sm" (click)="edit(c)">Editar</button>
+              <button type="button" class="btn btn-sm btn-danger" (click)="delete(c)">Eliminar</button>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+    @if (categorias.length === 0 && !formMode) {
+      <p class="empty">No hay categorías. Agrega una desde el botón superior.</p>
+    }
+  </div>
+  }
+</div>
