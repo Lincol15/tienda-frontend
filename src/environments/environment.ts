@@ -1,3 +1,4 @@
+/** Configuración de producción (Render). URL base del API; imágenes (uploads) y peticiones usan apiUrl. */
 export const environment = {
   production: true,
   apiUrl: 'https://tienda-backend-ntfj.onrender.com',

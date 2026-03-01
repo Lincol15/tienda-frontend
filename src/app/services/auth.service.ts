@@ -10,6 +10,7 @@ const USER_KEY = 'cristos_caporales_user';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
+  private apiUrl = environment.apiUrl;
   private tokenSignal = signal<string | null>(this.getStoredToken());
   private userSignal = signal<{ username: string; rol: string } | null>(this.getStoredUser());
 
@@ -37,7 +38,7 @@ export class AuthService {
   }
 
   login(body: AuthLoginRequest): Observable<AuthResponse | null> {
-    return this.http.post<AuthResponse>(`${environment.apiUrl}/api/auth/login`, body).pipe(
+    return this.http.post<AuthResponse>(`${this.apiUrl}/api/auth/login`, body).pipe(
       tap((res) => {
         this.tokenSignal.set(res.token);
         this.userSignal.set({ username: res.username, rol: res.rol });
