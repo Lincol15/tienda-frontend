@@ -2,6 +2,8 @@
 
 Sigue los pasos en orden. Si tu repo en GitHub ya está actualizado, empieza por la parte 1.
 
+> **Si /corigen o /admin dan "Not Found"** en la URL de Render, falta la regla SPA: en el Static Site → **Settings** → **Redirects/Rewrites** → añadir **Rewrite** `/*` → `/index.html` (ver Paso 1.7).
+
 ---
 
 # PARTE 1: Subir el frontend a Render (paso a paso)
