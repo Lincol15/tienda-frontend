@@ -5,7 +5,7 @@ import { AsyncPipe } from '@angular/common';
 import { catchError, of } from 'rxjs';
 import { combineLatest, map } from 'rxjs';
 import { ApiService } from '../../services/api.service';
-import type { Foto, Video } from '../../models';
+import type { Foto, Video, ConfiguracionInicio } from '../../models';
 
 @Component({
   selector: 'app-inicio',
@@ -34,7 +34,7 @@ export class InicioComponent implements OnInit {
   lightboxVideo: Video | null = null;
   menuOpen = false;
   /** Portada y logo desde el admin; si no hay, se usan fallbacks. */
-  configInicio = signal<{ portadaUrl?: string | null; logoUrl?: string | null } | null>(null);
+  configInicio = signal<ConfiguracionInicio | null>(null);
   /** Logo del hero: desde API o fallback */
   heroLogoUrl = '/logo1.png';
 

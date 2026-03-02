@@ -64,7 +64,7 @@
             @for (foto of data.fotosSinSeccion; track foto.id) {
               <article class="gallery-item" (click)="openLightbox(foto)" role="button" tabindex="0" (keydown.enter)="openLightbox(foto)" (keydown.space)="openLightbox(foto); $event.preventDefault()">
                 <div class="gallery-img-wrap">
-                  <img [src]="imageUrl(foto.mediaUrl ?? foto.urlImagen)" [alt]="foto.titulo" loading="lazy" />
+                  <img [src]="imageUrl(foto.mediaUrl ?? foto.urlImagen ?? '')" [alt]="foto.titulo" loading="lazy" />
                 </div>
                 <div class="gallery-caption">
                   <h3>{{ foto.titulo }}</h3>
@@ -85,7 +85,7 @@
               @for (foto of data.fotosSinSeccion; track foto.id) {
                 <article class="gallery-item" (click)="openLightbox(foto)" role="button" tabindex="0" (keydown.enter)="openLightbox(foto)" (keydown.space)="openLightbox(foto); $event.preventDefault()">
                   <div class="gallery-img-wrap">
-                    <img [src]="imageUrl(foto.mediaUrl ?? foto.urlImagen)" [alt]="foto.titulo" loading="lazy" />
+                    <img [src]="imageUrl(foto.mediaUrl ?? foto.urlImagen ?? '')" [alt]="foto.titulo" loading="lazy" />
                   </div>
                   <div class="gallery-caption">
                     <h3>{{ foto.titulo }}</h3>
@@ -110,7 +110,7 @@
                   @for (foto of sec.fotos; track foto.id) {
                     <article class="gallery-item" (click)="openLightbox(foto)" role="button" tabindex="0" (keydown.enter)="openLightbox(foto)" (keydown.space)="openLightbox(foto); $event.preventDefault()">
                       <div class="gallery-img-wrap">
-                        <img [src]="imageUrl(foto.mediaUrl ?? foto.urlImagen)" [alt]="foto.titulo" loading="lazy" />
+                        <img [src]="imageUrl(foto.mediaUrl ?? foto.urlImagen ?? '')" [alt]="foto.titulo" loading="lazy" />
                       </div>
                       <div class="gallery-caption">
                         <h3>{{ foto.titulo }}</h3>
@@ -133,7 +133,7 @@
     <div class="lightbox-overlay" (click)="closeLightbox()" role="button" tabindex="0">
       <div class="lightbox-content" (click)="$event.stopPropagation()">
         <button type="button" class="lightbox-close" (click)="closeLightbox()" aria-label="Cerrar">&times;</button>
-        <img [src]="imageUrl(lightboxFoto.mediaUrl ?? lightboxFoto.urlImagen)" [alt]="lightboxFoto.titulo" />
+        <img [src]="imageUrl(lightboxFoto.mediaUrl ?? lightboxFoto.urlImagen ?? '')" [alt]="lightboxFoto.titulo" />
         <div class="lightbox-caption">
           <h3>{{ lightboxFoto.titulo }}</h3>
           @if (lightboxFoto.descripcion) {
