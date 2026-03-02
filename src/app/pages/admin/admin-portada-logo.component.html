@@ -13,7 +13,7 @@
       <p class="form-hint">Recomendado: imagen <strong>grande y ancha</strong> (por ejemplo 1920×500 px o similar) para el banner superior de la página de inicio.</p>
       @if (config()?.portadaUrl) {
         <div class="preview-wrap">
-          <img [src]="imageUrl(config()?.portadaUrl)" alt="Portada actual" class="preview-portada" />
+          <img [src]="imageUrl(config()?.portadaUrl ?? '')" alt="Portada actual" class="preview-portada" />
         </div>
       }
       <label>
@@ -25,7 +25,7 @@
       <p class="form-hint">Recomendado: <strong>PNG sin fondo</strong> (transparente) para que se vea bien sobre cualquier color.</p>
       @if (config()?.logoUrl) {
         <div class="preview-wrap logo-preview">
-          <img [src]="imageUrl(config()?.logoUrl)" alt="Logo actual" class="preview-logo" />
+          <img [src]="imageUrl(config()?.logoUrl ?? '')" alt="Logo actual" class="preview-logo" />
         </div>
       }
       <label>

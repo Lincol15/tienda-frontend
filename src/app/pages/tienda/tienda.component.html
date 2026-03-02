@@ -129,7 +129,7 @@
             <article class="producto-card">
               <div class="producto-img">
                 @if (p.imagenUrl ?? p.urlImagen) {
-                  <img [src]="imageUrl(p.imagenUrl ?? p.urlImagen)" [alt]="p.nombre" loading="lazy" />
+                  <img [src]="imageUrl(p.imagenUrl ?? p.urlImagen ?? '')" [alt]="p.nombre" loading="lazy" />
                 } @else {
                   <div class="producto-placeholder">Sin imagen</div>
                 }

@@ -75,7 +75,7 @@
           <tr>
             <td>
               @if (p.imagenUrl ?? p.urlImagen) {
-                <img [src]="imageUrl(p.imagenUrl ?? p.urlImagen)" [alt]="p.nombre" class="thumb" />
+                <img [src]="imageUrl(p.imagenUrl ?? p.urlImagen ?? '')" [alt]="p.nombre" class="thumb" />
               } @else {
                 —
               }
