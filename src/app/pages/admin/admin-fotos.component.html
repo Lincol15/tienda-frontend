@@ -65,7 +65,7 @@
         @for (f of fotos; track f.id) {
           <tr>
             <td>
-              <img [src]="imageUrl(f.urlImagen)" [alt]="f.titulo" class="thumb" />
+              <img [src]="imageUrl(f.mediaUrl ?? f.urlImagen)" [alt]="f.titulo" class="thumb" />
             </td>
             <td>{{ f.titulo }}</td>
             <td>{{ f.activo ? 'Sí' : 'No' }}</td>

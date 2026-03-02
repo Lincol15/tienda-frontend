@@ -2,7 +2,12 @@ export interface Foto {
   id: number;
   titulo: string;
   descripcion: string | null;
-  urlImagen: string;
+  /** URL de imagen (Cloudinary o relativa). Preferir mediaUrl si la API devuelve galería unificada. */
+  urlImagen?: string;
+  /** URL de media (imagen o video) cuando el backend unifica galería. */
+  mediaUrl?: string | null;
+  /** Tipo de media: 'imagen' | 'video' para galería. */
+  tipo?: string | null;
   activo: boolean;
   fechaCreacion?: string;
   seccionId?: number | null;
@@ -49,7 +54,9 @@ export interface Producto {
   descripcion: string | null;
   precio: number;
   stock?: number;
-  urlImagen: string | null;
+  /** URL de imagen (Cloudinary). Backend puede devolver imagenUrl o urlImagen. */
+  imagenUrl?: string | null;
+  urlImagen?: string | null;
   activo: boolean;
   categoriaId: number;
   categoria?: Categoria;
@@ -94,6 +101,16 @@ export interface ProductoDatos {
 export interface ConfiguracionInicio {
   portadaUrl?: string | null;
   logoUrl?: string | null;
+  bannerUrl?: string | null;
+}
+
+/** Caporal (Caporales Cristos): foto + video con URLs Cloudinary. */
+export interface Caporal {
+  id?: number;
+  titulo: string;
+  descripcion: string | null;
+  fotoUrl?: string | null;
+  videoUrl?: string | null;
 }
 
 /** Configuración de la tienda (número WhatsApp y plantilla de mensaje). */

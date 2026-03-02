@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
-import type { Foto, Video, Producto, Categoria, FotoDatos, VideoDatos, ProductoDatos, CategoriaDatos, SeccionGaleria, SeccionGaleriaDatos, ConfiguracionInicio, ConfiguracionTienda, MetodoPago, MetodoPagoDatos, PedidoRequest, Venta } from '../models';
+import type { Foto, Video, Producto, Categoria, Caporal, FotoDatos, VideoDatos, ProductoDatos, CategoriaDatos, SeccionGaleria, SeccionGaleriaDatos, ConfiguracionInicio, ConfiguracionTienda, MetodoPago, MetodoPagoDatos, PedidoRequest, Venta } from '../models';
 
 @Injectable({ providedIn: 'root' })
 export class ApiService {
@@ -193,32 +193,36 @@ export class ApiService {
 
   adminCreateProducto(datos: ProductoDatos, imagen?: File): Observable<Producto> {
     const form = new FormData();
-    const datosPayload = {
-      nombre: datos.nombre,
-      descripcion: datos.descripcion ?? '',
-      precio: Number(datos.precio),
-      categoriaId: Number(datos.categoriaId),
-      stock: Number(datos.stock ?? 0),
-      activo: datos.activo ?? true
-    };
-    form.append('datos', new Blob([JSON.stringify(datosPayload)], { type: 'application/json' }));
+    form.append('nombre', datos.nombre);
+    form.append('descripcion', datos.descripcion ?? '');
+    form.append('precio', String(Number(datos.precio)));
+    form.append('categoriaId', String(Number(datos.categoriaId)));
+    form.append('stock', String(Number(datos.stock ?? 0)));
+    form.append('activo', String(!!datos.activo));
     if (imagen) form.append('imagen', imagen);
     return this.http.post<Producto>(`${this.apiUrl}/api/admin/productos`, form);
   }
 
   adminUpdateProducto(id: number, datos: ProductoDatos, imagen?: File): Observable<Producto> {
     const form = new FormData();
-    const datosPayload = {
-      nombre: datos.nombre,
-      descripcion: datos.descripcion ?? '',
-      precio: Number(datos.precio),
-      categoriaId: Number(datos.categoriaId),
-      stock: Number(datos.stock ?? 0),
-      activo: datos.activo ?? true
-    };
-    form.append('datos', new Blob([JSON.stringify(datosPayload)], { type: 'application/json' }));
+    form.append('nombre', datos.nombre);
+    form.append('descripcion', datos.descripcion ?? '');
+    form.append('precio', String(Number(datos.precio)));
+    form.append('categoriaId', String(Number(datos.categoriaId)));
+    form.append('stock', String(Number(datos.stock ?? 0)));
+    form.append('activo', String(!!datos.activo));
     if (imagen) form.append('imagen', imagen);
     return this.http.put<Producto>(`${this.apiUrl}/api/admin/productos/${id}`, form);
+  }
+
+  /** Caporales: subir foto y/o video (FormData). Backend devuelve URLs Cloudinary. */
+  subirCaporal(data: { titulo: string; descripcion: string }, foto?: File, video?: File): Observable<Caporal> {
+    const formData = new FormData();
+    formData.append('titulo', data.titulo);
+    formData.append('descripcion', data.descripcion ?? '');
+    if (foto) formData.append('foto', foto);
+    if (video) formData.append('video', video);
+    return this.http.post<Caporal>(`${this.apiUrl}/api/caporales`, formData);
   }
 
   adminDeleteProducto(id: number): Observable<void> {

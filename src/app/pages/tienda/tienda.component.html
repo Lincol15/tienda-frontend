@@ -46,8 +46,8 @@
         <ul class="cart-list">
           @for (item of cartItems(); track item.productoId) {
             <li class="cart-item">
-              @if (item.urlImagen) {
-                <img [src]="imageUrl(item.urlImagen)" [alt]="item.nombre" class="cart-item-img" />
+              @if (item.imagenUrl ?? item.urlImagen) {
+                <img [src]="imageUrl(item.imagenUrl ?? item.urlImagen)" [alt]="item.nombre" class="cart-item-img" />
               } @else {
                 <div class="cart-item-placeholder">Sin imagen</div>
               }
@@ -128,8 +128,8 @@
           @for (p of productos; track p.id) {
             <article class="producto-card">
               <div class="producto-img">
-                @if (p.urlImagen) {
-                  <img [src]="imageUrl(p.urlImagen)" [alt]="p.nombre" loading="lazy" />
+                @if (p.imagenUrl ?? p.urlImagen) {
+                  <img [src]="imageUrl(p.imagenUrl ?? p.urlImagen)" [alt]="p.nombre" loading="lazy" />
                 } @else {
                   <div class="producto-placeholder">Sin imagen</div>
                 }

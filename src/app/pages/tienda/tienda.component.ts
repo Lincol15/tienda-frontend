@@ -99,7 +99,7 @@ export class TiendaComponent implements OnInit {
         productoId: p.id,
         nombre: p.nombre,
         precio: p.precio,
-        urlImagen: p.urlImagen ?? null,
+        urlImagen: p.imagenUrl ?? p.urlImagen ?? null,
         stock
       },
       toAdd

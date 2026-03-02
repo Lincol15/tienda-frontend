@@ -74,8 +74,8 @@
         @for (p of productos; track p.id) {
           <tr>
             <td>
-              @if (p.urlImagen) {
-                <img [src]="imageUrl(p.urlImagen)" [alt]="p.nombre" class="thumb" />
+              @if (p.imagenUrl ?? p.urlImagen) {
+                <img [src]="imageUrl(p.imagenUrl ?? p.urlImagen)" [alt]="p.nombre" class="thumb" />
               } @else {
                 —
               }

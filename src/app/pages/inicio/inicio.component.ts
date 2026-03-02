@@ -48,9 +48,10 @@ export class InicioComponent implements OnInit {
     });
   }
 
-  /** URL de la portada: desde API o imagen por defecto */
+  /** URL de la portada: desde API (portadaUrl o bannerUrl) o imagen por defecto */
   portadaUrl(): string {
-    const url = this.configInicio()?.portadaUrl;
+    const c = this.configInicio();
+    const url = c?.portadaUrl ?? c?.bannerUrl;
     return url ? this.api.imageUrl(url) : '/banner.png';
   }
 
