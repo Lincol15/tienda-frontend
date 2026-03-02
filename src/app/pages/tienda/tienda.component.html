@@ -46,8 +46,8 @@
         <ul class="cart-list">
           @for (item of cartItems(); track item.productoId) {
             <li class="cart-item">
-              @if (item.imagenUrl ?? item.urlImagen) {
-                <img [src]="imageUrl(item.imagenUrl ?? item.urlImagen)" [alt]="item.nombre" class="cart-item-img" />
+              @if (item.urlImagen) {
+                <img [src]="imageUrl(item.urlImagen)" [alt]="item.nombre" class="cart-item-img" />
               } @else {
                 <div class="cart-item-placeholder">Sin imagen</div>
               }
