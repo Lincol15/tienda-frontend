@@ -10,7 +10,12 @@
       </label>
       <label>
         Contraseña
-        <input type="password" [(ngModel)]="password" name="password" required autocomplete="current-password" />
+        <div class="password-wrap">
+          <input [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password" required autocomplete="current-password" />
+          <button type="button" class="password-toggle" (click)="showPassword = !showPassword" [attr.aria-label]="showPassword ? 'Ocultar contraseña' : 'Ver contraseña'" title="{{ showPassword ? 'Ocultar' : 'Ver contraseña' }}">
+            {{ showPassword ? 'Ocultar' : 'Ver' }}
+          </button>
+        </div>
       </label>
       @if (error) {
         <p class="error">Usuario o contraseña incorrectos.</p>
